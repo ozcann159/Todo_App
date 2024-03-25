@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:todo_app/constants/color.dart';
+import 'package:todo_app/constants/tasktype.dart';
+import 'package:todo_app/model/task.dart';
 import 'package:todo_app/screens/add_new_task.dart';
+import 'package:todo_app/service/todo_service.dart';
 import 'package:todo_app/todo_item.dart';
 
 class Home extends StatefulWidget {
@@ -12,22 +15,67 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<String> todo = ["Study Lessons", "Run 5K", "Go to party"];
-  List<String> competed = ["Game meetup", "Take out trash"];
+  //List<String> todo = ["Study Lessons", "Run 5K", "Go to party"];
+  //List<String> competed = ["Game meetup", "Take out trash"];
+
+  List<Task> todo = [
+    Task(
+        title: "Study Lessons",
+        description: "Study COMP117",
+        isCompleted: false,
+        type: TaskType.note),
+    Task(
+        title: "Go to party",
+        description: "Attend to pary",
+        isCompleted: false,
+        type: TaskType.calendar),
+    Task(
+        title: "Run 5K",
+        description: "Run 5 kilometers",
+        isCompleted: false,
+        type: TaskType.contest),
+  ];
+
+  List<Task> completed = [
+    Task(
+        title: "Go to party",
+        description: "Attend to pary",
+        isCompleted: false,
+        type: TaskType.calendar),
+    Task(
+        title: "Run 5K",
+        description: "Run 5 kilometers",
+        isCompleted: false,
+        type: TaskType.contest),
+  ];
+
+  void addNewTask(Task newTask) {
+    setState(() {
+      todo.add(newTask);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    TodoService todoService = TodoService();
+    todoService.getTodos();
     double deviceHeight = MediaQuery.of(context).size.height;
     double deviceWidth = MediaQuery.of(context).size.width;
     return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.indigo),
       home: SafeArea(
         child: Scaffold(
           backgroundColor: HexColor(backgroundColor),
           body: Column(
             children: [
               Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius:
+                        BorderRadius.only(bottomRight: Radius.circular(70))),
                 width: deviceWidth,
-                height: deviceHeight / 3,
-                color: const Color(0xff395886),
+                height: deviceHeight / 5,
+                // color: const Color(0xff395886),
                 child: const Column(
                   children: [
                     Padding(
@@ -61,7 +109,7 @@ class _HomeState extends State<Home> {
                     itemCount: todo.length,
                     itemBuilder: (context, index) {
                       return TodoItem(
-                        title: todo[index],
+                        task: todo[index],
                       );
                     },
                   )),
@@ -84,11 +132,9 @@ class _HomeState extends State<Home> {
                       child: ListView.builder(
                     shrinkWrap: true,
                     primary: false,
-                    itemCount: competed.length,
+                    itemCount: completed.length,
                     itemBuilder: (context, index) {
-                      return TodoItem(
-                        title: competed[index],
-                      );
+                      return TodoItem(task: completed[index]);
                     },
                   )),
                 ),
@@ -98,7 +144,8 @@ class _HomeState extends State<Home> {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AddNewTask(),
+                      builder: (context) => AddNewTaskScreen(
+                          addNewTask: (newTask) => addNewTask(newTask)),
                     ));
                   },
                   child: const Text("Add New Task"),

@@ -13,7 +13,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isChecked = false;
+  
 
   @override
   Widget build(BuildContext context) {
