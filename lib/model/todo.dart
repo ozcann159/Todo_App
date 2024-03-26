@@ -30,6 +30,7 @@ class Todo {
   Todo({
     required this.id,
     required this.todo,
+    this.completed,
     required this.userId,
   });
 }

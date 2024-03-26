@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:todo_app/constants/tasktype.dart';
-import 'package:todo_app/model/task.dart';
+import 'package:todo_app/model/todo.dart';
 
 class TodoItem extends StatefulWidget {
   const TodoItem({
@@ -10,7 +9,7 @@ class TodoItem extends StatefulWidget {
   }) : super(
           key: key,
         );
-  final Task task;
+  final Todo task;
 
   @override
   State<TodoItem> createState() => _TodoItemState();
@@ -22,33 +21,36 @@ class _TodoItemState extends State<TodoItem> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: widget.task.isCompleted ? Colors.grey : Colors.white,
+      color: widget.task.completed! ? Colors.grey : Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            widget.task.type == TaskType.note
+            /**TODO: Firebase işlemleri
+             * widget.task.type == TaskType.note
                 ? Image.asset("assets/images/3.png")
                 : widget.task.type == TaskType.contest
                     ? Image.asset("assets/images/2.png")
                     : Image.asset("assets/images/1.png"),
+             */
+
             Expanded(
               child: Column(children: [
                 Text(
-                  widget.task.title,
+                  widget.task.todo!,
                   style: TextStyle(
-                      decoration: widget.task.isCompleted
+                      decoration: widget.task.completed!
                           ? TextDecoration.lineThrough
                           : TextDecoration.none,
                       fontSize: 20,
                       fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  widget.task.description,
+                  "User${widget.task.userId!}",
                   style: TextStyle(
-                      decoration: widget.task.isCompleted
+                      decoration: widget.task.completed!
                           ? TextDecoration.lineThrough
                           : TextDecoration.none),
                 )
@@ -59,7 +61,7 @@ class _TodoItemState extends State<TodoItem> {
                 value: isChecked,
                 onChanged: (val) {
                   setState(() {
-                    widget.task.isCompleted = !widget.task.isCompleted;
+                    widget.task.completed = !widget.task.completed!;
                     isChecked = val!; // val değişkeni varsa işleme koy
                   });
                 }),
